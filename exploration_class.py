@@ -3,11 +3,9 @@ import random as rd
 import pygame
 
 
-class jeutag():
-    def __init__(self, taille):
-        self.tableau1 = np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
-        self.tableau = np.zeros((taille, taille))
-        self.taille = taille
+class SpaceAdventure():
+    def __init__(self, niveau):
+        self.tableau = self.niveau(niveau)
 
         self.vaisseau = pygame.image.load("Images\Vaisseau.png")
         self.vaisseau = pygame.transform.scale(self.vaisseau, (32,32))
@@ -15,16 +13,38 @@ class jeutag():
         self.PepeTagPlay_BG = pygame.image.load("Images\BackgroundMenu.png")
         self.PepeTagPlay_BG = pygame.transform.scale(self.PepeTagPlay_BG, (1280,720))
         
+        self.gold = pygame.image.load("Images\Piere6.png")
+        self.gold = pygame.transform.scale(self.gold, (32,32))
+        
         self.Window_Size = (1280, 720)
-        
+        self.goldcount = 0
         self.end = False
-
-    def play(self):
-        posi = np.where(self.tableau == 1)
-        
     
     def get_font(self, size):
         return pygame.font.Font("fonts/font1.ttf", size)
+    
+    def niveau(self, niveau):
+        if niveau == 1:
+            taille = 7
+            tableau = np.zeros((taille, taille))
+            self.taille = taille
+            tableau[6][3] = 1
+            tableau[2:6,3] = 2
+        return tableau
+    
+    def avant(self):
+        posi = np.where(self.tableau == 1)
+        self.tableau[posi[0][0]][posi[1][0]] = 0
+        self.tableau[posi[0][0]-1][posi[1][0]] = self.move('vaisseau', self.tableau[posi[0][0]-1][posi[1][0]])
+        
+    def move(self, who, position):
+        if who == 'vaisseau':
+            if position == 0:
+                position = 1
+            if position == 2:
+                self.goldcount += 1
+                position = 1
+        return position
 
     def displayScreen(self, screen):
         square_dim = int(self.Window_Size [0] /40)
@@ -39,18 +59,14 @@ class jeutag():
             for point in  ligne:
                 if point == 1:
                     screen.blit(self.vaisseau, (coord_x,coord_y))
+                elif point == 2:
+                    screen.blit(self.gold, (coord_x,coord_y))
                 coord_x += square_dim
             coord_x = self.Window_Size[0]/2 - (int(self.taille/2))*square_dim
             coord_y += square_dim
         coord_x = self.Window_Size[0]/2 - (int(self.taille/2))*square_dim
         coord_y = self.Window_Size[1]/2 - (int(self.taille/2))*square_dim
         
-        for k in range(len(self.List_Feu)):
-            screen.blit(self.Feu, (self.Window_Size[0]/2 - (int(self.taille/2))*square_dim + self.List_Feu[k][1]*square_dim, self.Window_Size[1]/2 - (int(self.taille/2))*square_dim + self.List_Feu[k][0]*square_dim))
-        self.Feu_count +=1
-        if self.Feu_count > 4:
-            self.Feu_count = 0
-            self.List_Feu = []
         for i in range(self.taille+1):
             pointX = coord_x + (i)*square_dim
             pygame.draw.line(screen, (224,224,224), (pointX,coord_y),(pointX,coord_y + (self.taille)*square_dim))

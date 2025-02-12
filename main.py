@@ -9,7 +9,7 @@ from button import Button
 from utility import images
 I = images()
 
-from exploration_class import jeutag
+from exploration_class import SpaceAdventure
 import numpy as np
 
 #Initialisation du Pygame
@@ -38,210 +38,212 @@ def get_font(size):
 #Liste des jeux
 def play(profile_joueur = None):
     if True:
-        partie = jeutag(5)
+        partie = SpaceAdventure(1)
         start = time.perf_counter()
         end1 = time.perf_counter()
-        partie.displayScreen(screen)
+        print(start)
         run = True
-        turn_count = 0
+        # turn_count = 0
         Loop_count = 0
         while run:
             if (int(end1-start+1) * 10) % 5 == 0:
-                partie.Galax_On(self.CHECK)
+        #         partie.Galax_On(self.CHECK)
                 Loop_count += 1
-                screen.fill((0,0,0))
+        #         screen.fill((0,0,0))
                 PLAY_MOUSE_POS = pygame.mouse.get_pos()
 
-                partie.displayScreen(screen, False, self.buy_Kame, self.buy_Stop)
+                partie.displayScreen(SCREEN)
 
                 PLAY_BACK = Button(base_image=None, position=(30, 20), 
-                                    text_input="BACK", font=self.get_font(15), base_color="White", hovering_color="Green")
+                                    text_input="BACK", font=get_font(15), base_color="White", hovering_color="Green")
 
                 PLAY_BACK.changeColor(PLAY_MOUSE_POS)
-                PLAY_BACK.update(screen)
-                        
-                if self.PAUSE:
-                    PAUSE_FOND = pygame.image.load("Images\Large_black_button.png")
-                    PAUSE_FOND_RECT = pygame.image.load("Images\Large_black_button.png").get_rect(center=(640, 300))
-                    PAUSE_TEXT = self.get_font(35).render("Le jeu est en pause, appuyez sur ESC pour continuer", True, "#b68f40")
-                    PAUSE_RECT = PAUSE_TEXT.get_rect(center=(640, 300))
-                    screen.blit(PAUSE_FOND, PAUSE_FOND_RECT)
-                    screen.blit(PAUSE_TEXT, PAUSE_RECT)
+                PLAY_BACK.update(SCREEN)
+
+                if Loop_count % 35 == 1:
+                    partie.avant()
+                if len(np.where(partie.tableau == 2)[0]) == 0:
+                    run = False
+        #         if self.PAUSE:
+        #             PAUSE_FOND = pygame.image.load("Images\Large_black_button.png")
+        #             PAUSE_FOND_RECT = pygame.image.load("Images\Large_black_button.png").get_rect(center=(640, 300))
+        #             PAUSE_TEXT = self.get_font(35).render("Le jeu est en pause, appuyez sur ESC pour continuer", True, "#b68f40")
+        #             PAUSE_RECT = PAUSE_TEXT.get_rect(center=(640, 300))
+        #             screen.blit(PAUSE_FOND, PAUSE_FOND_RECT)
+        #             screen.blit(PAUSE_TEXT, PAUSE_RECT)
                 
-                if partie.mort():
-                    self.PAUSE = True
-                    MORT_FOND = pygame.image.load("Images\Large_black_button.png")
-                    MORT_FOND_RECT = pygame.image.load("Images\Large_black_button.png").get_rect(center=(640, 300))
-                    MORT_TEXT = self.get_font(45).render("Vous êtes mort!", True, "#b68f40")
-                    MORT_RECT = MORT_TEXT.get_rect(center=(640, 300))
-                    SCORE_TEXT = self.get_font(25).render(f'Votre score est : {partie.score_count()}', True, "#b68f40")
-                    SCORE_RECT = SCORE_TEXT.get_rect(center=(640, 335))
-                    screen.blit(MORT_FOND, MORT_FOND_RECT)
-                    screen.blit(MORT_TEXT, MORT_RECT)
-                    screen.blit(SCORE_TEXT, SCORE_RECT)
+        #         if partie.mort():
+        #             self.PAUSE = True
+        #             MORT_FOND = pygame.image.load("Images\Large_black_button.png")
+        #             MORT_FOND_RECT = pygame.image.load("Images\Large_black_button.png").get_rect(center=(640, 300))
+        #             MORT_TEXT = self.get_font(45).render("Vous êtes mort!", True, "#b68f40")
+        #             MORT_RECT = MORT_TEXT.get_rect(center=(640, 300))
+        #             SCORE_TEXT = self.get_font(25).render(f'Votre score est : {partie.score_count()}', True, "#b68f40")
+        #             SCORE_RECT = SCORE_TEXT.get_rect(center=(640, 335))
+        #             screen.blit(MORT_FOND, MORT_FOND_RECT)
+        #             screen.blit(MORT_TEXT, MORT_RECT)
+        #             screen.blit(SCORE_TEXT, SCORE_RECT)
 
-                    BACK_DEAD = Button(base_image=pygame.image.load("Images\Black_Button.png"), position=(640, 500), 
-                                        text_input="OK...", font=self.get_font(35), base_color="#b68f40", hovering_color="Green")
+        #             BACK_DEAD = Button(base_image=pygame.image.load("Images\Black_Button.png"), position=(640, 500), 
+        #                                 text_input="OK...", font=self.get_font(35), base_color="#b68f40", hovering_color="Green")
 
-                    BACK_DEAD.changeColor(PLAY_MOUSE_POS)
-                    BACK_DEAD.update(screen)
+        #             BACK_DEAD.changeColor(PLAY_MOUSE_POS)
+        #             BACK_DEAD.update(screen)
 
-                    DEAD = pygame.image.load("Images\Vert_Mort.png")
-                    DEAD = pygame.transform.scale(DEAD, (55,55))
-                    screen.blit(DEAD, (710, 470))
+        #             DEAD = pygame.image.load("Images\Vert_Mort.png")
+        #             DEAD = pygame.transform.scale(DEAD, (55,55))
+        #             screen.blit(DEAD, (710, 470))
 
-                    for event in pygame.event.get():
-                        if event.type == pygame.QUIT:
-                            self.money += partie.Money
-                            pygame.quit()
-                            sys.exit()
-                        elif event.type == pygame.MOUSEBUTTONDOWN:
-                            if event.button == 1:
-                                if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
-                                    self.money += partie.Money
-                                    self.PAUSE = False
-                                    run = False
-                                    break
-                                if BACK_DEAD.checkForInput(PLAY_MOUSE_POS):
-                                    self.money += partie.Money + int(partie.score_tot/10)
-                                    self.PAUSE = False
-                                    run = False
-                                    break
+        #             for event in pygame.event.get():
+        #                 if event.type == pygame.QUIT:
+        #                     self.money += partie.Money
+        #                     pygame.quit()
+        #                     sys.exit()
+        #                 elif event.type == pygame.MOUSEBUTTONDOWN:
+        #                     if event.button == 1:
+        #                         if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
+        #                             self.money += partie.Money
+        #                             self.PAUSE = False
+        #                             run = False
+        #                             break
+        #                         if BACK_DEAD.checkForInput(PLAY_MOUSE_POS):
+        #                             self.money += partie.Money + int(partie.score_tot/10)
+        #                             self.PAUSE = False
+        #                             run = False
+        #                             break
 
-                        pygame.display.update()
+        #                 pygame.display.update()
 
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
-                        self.money += partie.Money
                         pygame.quit()
                         sys.exit()
                     elif event.type == pygame.MOUSEBUTTONDOWN:
                         if event.button == 1:
                             if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
-                                self.money += partie.Money
                                 run = False
                                 break
-                    elif event.type == pygame.KEYDOWN and not partie.mort():
-                        if event.key == pygame.K_ESCAPE:
-                            self.pause_Switch()
-                        if not self.PAUSE:
-                            if event.key == pygame.K_a or event.key == pygame.K_LEFT:
-                                if self.CHOICE != 5:
-                                    partie.jouer('a')
-                                self.direction = 'a'
-                            elif event.key == pygame.K_d or event.key == pygame.K_RIGHT:
-                                if self.CHOICE != 5:
-                                    partie.jouer('d')
-                                self.direction = 'd'
-                            elif event.key == pygame.K_w or event.key == pygame.K_UP:
-                                if self.CHOICE != 5:
-                                    partie.jouer('w')
-                                self.direction = 'w'
-                            elif event.key == pygame.K_s or event.key == pygame.K_DOWN:
-                                if self.CHOICE != 5:
-                                    partie.jouer('s')
-                                self.direction = 's'
-                            if event.key == pygame.K_LSHIFT and self.buy_Stop:
-                                partie.STOP = True
-                                if partie.stop_counter == 0:
-                                    partie.stop_counter = 1
-                            if event.key == pygame.K_SPACE and self.buy_Kame:
-                                if partie.Kame_counter == 0:
-                                    partie.Kame_counter = 1
-                                    partie.Kamehameha()
-                            if event.key == pygame.K_a or event.key == pygame.K_LEFT or event.key == pygame.K_d or event.key == pygame.K_RIGHT or event.key == pygame.K_w or event.key == pygame.K_UP or event.key == pygame.K_s or event.key == pygame.K_DOWN:
-                                turn_count +=1
-                                partie.score_count(0)
-                                if self.CHOICE == 1 and not partie.STOP:
-                                    for _ in range(int(turn_count/20)):
-                                        partie.spawn ()
-                                    if turn_count % 5 == 0:
-                                        partie.Boost()
-                                    if not partie.Boost_On:
-                                        partie.mouv_ennemie()
-                                        partie.spawn ()
-                                    if partie.Boost_On:
-                                        partie.Boost_counter()
-                                        if partie.Boost_count % 2 == 0:
-                                            partie.mouv_ennemie()
-                                            partie.spawn ()
-                                if turn_count%25 == 0:
-                                    partie.dope()
-                                if (turn_count + 3) % 9 == 0:
-                                    partie.scores(1)
-                                if (turn_count+2) % 5 == 0:
-                                    partie.scores(2)
-                                if (turn_count) % 25 == 0:
-                                    partie.scores(3)
-                                if partie.is_rage():
-                                    partie.Rage_counter()
-                if not self.PAUSE:
-                    if self.CHOICE == 5:
-                        if Loop_count % 15 == 0:
-                            partie.jouer(self.direction)
-                        if not partie.STOP:
-                            if Loop_count % 30 == 0:
-                                for _ in range(int(Loop_count/600)):
-                                    partie.spawn ()
-                                if Loop_count % 75 == 0:
-                                    partie.Slow_Down()
-                                if partie.Slow_On:
-                                    partie.Slow_counter()
-                                    if partie.Slow_count % 2 == 0:
-                                        partie.mouv_ennemie()
-                                        partie.spawn ()
-                                if not partie.Slow_On:
-                                    partie.mouv_ennemie()
-                                    partie.spawn ()
-                if not self.PAUSE and not partie.STOP:
-                    if self.CHOICE == 2:
-                        if Loop_count % 40 == 0:
-                            if Loop_count % 200 == 0:
-                                    partie.Slow_Down()
-                            if partie.Slow_On:
-                                partie.Slow_counter()
-                                if partie.Slow_count % 2 == 0:
-                                    partie.mouv_ennemie()
-                                    partie.spawn ()
-                            if not partie.Slow_On:
-                                    partie.mouv_ennemie()
-                                    partie.spawn ()
-                            for _ in range(int(Loop_count/800)):
-                                partie.spawn ()
-                    if self.CHOICE == 3:
-                        if Loop_count % 25 == 0:
-                            for _ in range(int(Loop_count/500)):
-                                partie.spawn ()
-                            if Loop_count % 125 == 0:
-                                partie.Slow_Down()
-                            if partie.Slow_On:
-                                partie.Slow_counter()
-                                if partie.Slow_count % 2 == 0:
-                                    partie.mouv_ennemie()
-                                    partie.spawn ()
-                            if not partie.Slow_On:
-                                partie.mouv_ennemie()
-                                partie.spawn ()
-                    if self.CHOICE == 4:
-                        if Loop_count % 15 == 0:
-                            for _ in range(int(Loop_count/300)):
-                                partie.spawn ()
-                            if Loop_count % 75 == 0:
-                                partie.Slow_Down()
-                            if partie.Slow_On:
-                                partie.Slow_counter()
-                                if partie.Slow_count % 2 == 0:
-                                    partie.mouv_ennemie()
-                                    partie.spawn ()
-                            if not partie.Slow_On:
-                                partie.mouv_ennemie()
-                                partie.spawn ()
-                if not self.PAUSE and partie.stop_counter != 0:
-                    if Loop_count % 15 == 0:
-                        partie.stop()
-                if not self.PAUSE and partie.Kame_counter != 0:
-                    if Loop_count % 15 == 0:
-                        partie.Kame_count()
+        #             elif event.type == pygame.KEYDOWN and not partie.mort():
+        #                 if event.key == pygame.K_ESCAPE:
+        #                     self.pause_Switch()
+        #                 if not self.PAUSE:
+        #                     if event.key == pygame.K_a or event.key == pygame.K_LEFT:
+        #                         if self.CHOICE != 5:
+        #                             partie.jouer('a')
+        #                         self.direction = 'a'
+        #                     elif event.key == pygame.K_d or event.key == pygame.K_RIGHT:
+        #                         if self.CHOICE != 5:
+        #                             partie.jouer('d')
+        #                         self.direction = 'd'
+        #                     elif event.key == pygame.K_w or event.key == pygame.K_UP:
+        #                         if self.CHOICE != 5:
+        #                             partie.jouer('w')
+        #                         self.direction = 'w'
+        #                     elif event.key == pygame.K_s or event.key == pygame.K_DOWN:
+        #                         if self.CHOICE != 5:
+        #                             partie.jouer('s')
+        #                         self.direction = 's'
+        #                     if event.key == pygame.K_LSHIFT and self.buy_Stop:
+        #                         partie.STOP = True
+        #                         if partie.stop_counter == 0:
+        #                             partie.stop_counter = 1
+        #                     if event.key == pygame.K_SPACE and self.buy_Kame:
+        #                         if partie.Kame_counter == 0:
+        #                             partie.Kame_counter = 1
+        #                             partie.Kamehameha()
+        #                     if event.key == pygame.K_a or event.key == pygame.K_LEFT or event.key == pygame.K_d or event.key == pygame.K_RIGHT or event.key == pygame.K_w or event.key == pygame.K_UP or event.key == pygame.K_s or event.key == pygame.K_DOWN:
+        #                         turn_count +=1
+        #                         partie.score_count(0)
+        #                         if self.CHOICE == 1 and not partie.STOP:
+        #                             for _ in range(int(turn_count/20)):
+        #                                 partie.spawn ()
+        #                             if turn_count % 5 == 0:
+        #                                 partie.Boost()
+        #                             if not partie.Boost_On:
+        #                                 partie.mouv_ennemie()
+        #                                 partie.spawn ()
+        #                             if partie.Boost_On:
+        #                                 partie.Boost_counter()
+        #                                 if partie.Boost_count % 2 == 0:
+        #                                     partie.mouv_ennemie()
+        #                                     partie.spawn ()
+        #                         if turn_count%25 == 0:
+        #                             partie.dope()
+        #                         if (turn_count + 3) % 9 == 0:
+        #                             partie.scores(1)
+        #                         if (turn_count+2) % 5 == 0:
+        #                             partie.scores(2)
+        #                         if (turn_count) % 25 == 0:
+        #                             partie.scores(3)
+        #                         if partie.is_rage():
+        #                             partie.Rage_counter()
+        #         if not self.PAUSE:
+        #             if self.CHOICE == 5:
+        #                 if Loop_count % 15 == 0:
+        #                     partie.jouer(self.direction)
+        #                 if not partie.STOP:
+        #                     if Loop_count % 30 == 0:
+        #                         for _ in range(int(Loop_count/600)):
+        #                             partie.spawn ()
+        #                         if Loop_count % 75 == 0:
+        #                             partie.Slow_Down()
+        #                         if partie.Slow_On:
+        #                             partie.Slow_counter()
+        #                             if partie.Slow_count % 2 == 0:
+        #                                 partie.mouv_ennemie()
+        #                                 partie.spawn ()
+        #                         if not partie.Slow_On:
+        #                             partie.mouv_ennemie()
+        #                             partie.spawn ()
+        #         if not self.PAUSE and not partie.STOP:
+        #             if self.CHOICE == 2:
+        #                 if Loop_count % 40 == 0:
+        #                     if Loop_count % 200 == 0:
+        #                             partie.Slow_Down()
+        #                     if partie.Slow_On:
+        #                         partie.Slow_counter()
+        #                         if partie.Slow_count % 2 == 0:
+        #                             partie.mouv_ennemie()
+        #                             partie.spawn ()
+        #                     if not partie.Slow_On:
+        #                             partie.mouv_ennemie()
+        #                             partie.spawn ()
+        #                     for _ in range(int(Loop_count/800)):
+        #                         partie.spawn ()
+        #             if self.CHOICE == 3:
+        #                 if Loop_count % 25 == 0:
+        #                     for _ in range(int(Loop_count/500)):
+        #                         partie.spawn ()
+        #                     if Loop_count % 125 == 0:
+        #                         partie.Slow_Down()
+        #                     if partie.Slow_On:
+        #                         partie.Slow_counter()
+        #                         if partie.Slow_count % 2 == 0:
+        #                             partie.mouv_ennemie()
+        #                             partie.spawn ()
+        #                     if not partie.Slow_On:
+        #                         partie.mouv_ennemie()
+        #                         partie.spawn ()
+        #             if self.CHOICE == 4:
+        #                 if Loop_count % 15 == 0:
+        #                     for _ in range(int(Loop_count/300)):
+        #                         partie.spawn ()
+        #                     if Loop_count % 75 == 0:
+        #                         partie.Slow_Down()
+        #                     if partie.Slow_On:
+        #                         partie.Slow_counter()
+        #                         if partie.Slow_count % 2 == 0:
+        #                             partie.mouv_ennemie()
+        #                             partie.spawn ()
+        #                     if not partie.Slow_On:
+        #                         partie.mouv_ennemie()
+        #                         partie.spawn ()
+        #         if not self.PAUSE and partie.stop_counter != 0:
+        #             if Loop_count % 15 == 0:
+        #                 partie.stop()
+        #         if not self.PAUSE and partie.Kame_counter != 0:
+        #             if Loop_count % 15 == 0:
+        #                 partie.Kame_count()
                     
                 
                 pygame.display.update()

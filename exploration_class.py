@@ -10,6 +10,18 @@ class SpaceAdventure():
         self.vaisseau = pygame.image.load("Images\Vaisseau.png")
         self.vaisseau = pygame.transform.scale(self.vaisseau, (32,32))
         
+        self.vaisseauD = pygame.transform.rotate(self.vaisseau, 270)
+        
+        self.vaisseauG = pygame.transform.rotate(self.vaisseau, 180)
+        
+        self.vaisseauR = pygame.transform.rotate(self.vaisseau, 180)
+        
+        self.meteor = pygame.image.load("Images\météorites.png")
+        self.meteor = pygame.transform.scale(self.meteor, (32,32))
+        
+        self.Kaboom = pygame.image.load("Images\Kaboom.png")
+        self.Kaboom = pygame.transform.scale(self.Kaboom, (32,32))
+        
         self.PepeTagPlay_BG = pygame.image.load("Images\BackgroundMenu.png")
         self.PepeTagPlay_BG = pygame.transform.scale(self.PepeTagPlay_BG, (1280,720))
         
@@ -18,6 +30,8 @@ class SpaceAdventure():
         
         self.Window_Size = (1280, 720)
         self.goldcount = 0
+        self.mort = False
+        self.fini = False
         self.end = False
     
     def get_font(self, size):
@@ -29,21 +43,79 @@ class SpaceAdventure():
             tableau = np.zeros((taille, taille))
             self.taille = taille
             tableau[6][3] = 1
-            tableau[2:6,3] = 2
+            tableau[2:6,3] = 5
+        elif niveau == 2:
+            taille = 10
+            tableau = np.zeros((taille, taille))
+            self.taille = taille
+            tableau[9][4] = 1
+            tableau[7][4] = 5
+            tableau[6][4] = 6
+            tableau[7,4:8] = 5
+            tableau[7][8] = 6
+            tableau[8][7] = 5
         return tableau
     
+    def posi_vaisseau(self):
+        posi1 = np.where(self.tableau == 1)
+        posi2 = np.where(self.tableau == 2)
+        posi3 = np.where(self.tableau == 3)
+        posi4 = np.where(self.tableau == 4)
+        if len(posi1[0]) !=0:
+            val = 1
+            positrue = posi1
+        elif len(posi2[0]) !=0:
+            val = 2
+            positrue = posi2
+        elif len(posi3[0]) !=0:
+            val = 3
+            positrue = posi3
+        elif len(posi4[0]) !=0:
+            val = 4
+            positrue = posi4
+        else:
+            self.mort = True
+            return False
+        return val, positrue
+    
+    def action(self, strmove):
+        if strmove in ['avant', 'Avant']:
+            self.avant()
+        elif strmove in ['tdroite','Tdroite']:
+            self.tourner_D()
+        elif strmove in ['tgauche','Tgauche']:
+            self.tourner_G()
+    
     def avant(self):
-        posi = np.where(self.tableau == 1)
+        val, posi = self.posi_vaisseau()
         self.tableau[posi[0][0]][posi[1][0]] = 0
-        self.tableau[posi[0][0]-1][posi[1][0]] = self.move('vaisseau', self.tableau[posi[0][0]-1][posi[1][0]])
+        if val == 1:
+            self.tableau[posi[0][0]-1][posi[1][0]] = self.move(1, self.tableau[posi[0][0]-1][posi[1][0]])
+        elif val == 2:
+            self.tableau[posi[0][0]][posi[1][0]+1] = self.move(2, self.tableau[posi[0][0]][posi[1][0]+1])
+        elif val == 3:
+            self.tableau[posi[0][0]+1][posi[1][0]] = self.move(3, self.tableau[posi[0][0]+1][posi[1][0]])
+        elif val == 4:
+            self.tableau[posi[0][0]][posi[1][0]-1] = self.move(4, self.tableau[posi[0][0]][posi[1][0]-1])
         
+    def tourner_D(self):
+        val, posi = self.posi_vaisseau()
+        self.tableau[posi[0][0]][posi[1][0]] = int((val % 4) + 1)
+    
+    def tourner_G(self):
+        val, posi = self.posi_vaisseau()
+        if val == 1:
+            val == 5
+        self.tableau[posi[0][0]][posi[1][0]] = val-1
+    
     def move(self, who, position):
-        if who == 'vaisseau':
-            if position == 0:
-                position = 1
-            if position == 2:
-                self.goldcount += 1
-                position = 1
+        if position == 0:
+            position = who
+        elif position == 5:
+            self.goldcount += 1
+            position = who
+        elif position == 6:
+            position = 7
         return position
 
     def displayScreen(self, screen):
@@ -60,7 +132,17 @@ class SpaceAdventure():
                 if point == 1:
                     screen.blit(self.vaisseau, (coord_x,coord_y))
                 elif point == 2:
+                    screen.blit(self.vaisseauD, (coord_x,coord_y))
+                elif point == 3:
+                    screen.blit(self.vaisseauR, (coord_x,coord_y))
+                elif point == 4:
+                    screen.blit(self.vaisseauG, (coord_x,coord_y))
+                elif point == 5:
                     screen.blit(self.gold, (coord_x,coord_y))
+                elif point == 6:
+                    screen.blit(self.meteor, (coord_x,coord_y))
+                elif point == 7:
+                    screen.blit(self.Kaboom, (coord_x,coord_y))
                 coord_x += square_dim
             coord_x = self.Window_Size[0]/2 - (int(self.taille/2))*square_dim
             coord_y += square_dim

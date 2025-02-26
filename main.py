@@ -41,8 +41,8 @@ def play(equipe, niveau, moves):
         partie = SpaceAdventure(niveau)
         start = time.perf_counter()
         end1 = time.perf_counter()
-        
-        strmoves = longmoves(moves)
+        fin = False
+        strmoves, level_score = longmoves(moves)
         run = True
         # turn_count = 0
         Loop_count = 0
@@ -62,65 +62,52 @@ def play(equipe, niveau, moves):
                 PLAY_BACK.changeColor(PLAY_MOUSE_POS)
                 PLAY_BACK.update(SCREEN)
 
-                if (Loop_count + 1) % 35 == 1:
+                if (Loop_count + 1) % 35 == 1 and not fin:
                     partie.posi_vaisseau()
                     if len(np.where(partie.tableau == 5)[0]) == 0:
-                        run = False
+                        fin = True
                     elif partie.mort:
-                        run = False
+                        fin = True
                     else:
-                        partie.action(strmoves[move_count])
+                        if move_count == len(strmoves):
+                            fin = True
+                        else:
+                            partie.action(strmoves[move_count])
+                    if fin:
+                        level_score += partie.goldcount
                     move_count += 1
                 
-        #         if self.PAUSE:
-        #             PAUSE_FOND = pygame.image.load("Images\Large_black_button.png")
-        #             PAUSE_FOND_RECT = pygame.image.load("Images\Large_black_button.png").get_rect(center=(640, 300))
-        #             PAUSE_TEXT = self.get_font(35).render("Le jeu est en pause, appuyez sur ESC pour continuer", True, "#b68f40")
-        #             PAUSE_RECT = PAUSE_TEXT.get_rect(center=(640, 300))
-        #             screen.blit(PAUSE_FOND, PAUSE_FOND_RECT)
-        #             screen.blit(PAUSE_TEXT, PAUSE_RECT)
-                
-        #         if partie.mort():
-        #             self.PAUSE = True
-        #             MORT_FOND = pygame.image.load("Images\Large_black_button.png")
-        #             MORT_FOND_RECT = pygame.image.load("Images\Large_black_button.png").get_rect(center=(640, 300))
-        #             MORT_TEXT = self.get_font(45).render("Vous êtes mort!", True, "#b68f40")
-        #             MORT_RECT = MORT_TEXT.get_rect(center=(640, 300))
-        #             SCORE_TEXT = self.get_font(25).render(f'Votre score est : {partie.score_count()}', True, "#b68f40")
-        #             SCORE_RECT = SCORE_TEXT.get_rect(center=(640, 335))
-        #             screen.blit(MORT_FOND, MORT_FOND_RECT)
-        #             screen.blit(MORT_TEXT, MORT_RECT)
-        #             screen.blit(SCORE_TEXT, SCORE_RECT)
+                if fin:
+                    MORT_FOND = pygame.image.load("Images\Large_black_button.png")
+                    MORT_FOND_RECT = pygame.image.load("Images\Large_black_button.png").get_rect(center=(640, 300))
+                    MORT_TEXT = get_font(45).render("Vous êtes mort!", True, "#b68f40")
+                    MORT_RECT = MORT_TEXT.get_rect(center=(640, 300))
+                    SCORE_TEXT = get_font(25).render(f'Votre score pour ce niveau est : {level_score}', True, "#b68f40")
+                    SCORE_RECT = SCORE_TEXT.get_rect(center=(640, 335))
+                    SCREEN.blit(MORT_FOND, MORT_FOND_RECT)
+                    SCREEN.blit(MORT_TEXT, MORT_RECT)
+                    SCREEN.blit(SCORE_TEXT, SCORE_RECT)
 
-        #             BACK_DEAD = Button(base_image=pygame.image.load("Images\Black_Button.png"), position=(640, 500), 
-        #                                 text_input="OK...", font=self.get_font(35), base_color="#b68f40", hovering_color="Green")
+                    BACK_DEAD = Button(base_image=pygame.image.load("Images\Black_Button.png"), position=(640, 500), 
+                                        text_input="OK...", font=get_font(35), base_color="#b68f40", hovering_color="Green")
 
-        #             BACK_DEAD.changeColor(PLAY_MOUSE_POS)
-        #             BACK_DEAD.update(screen)
+                    BACK_DEAD.changeColor(PLAY_MOUSE_POS)
+                    BACK_DEAD.update(SCREEN)
 
-        #             DEAD = pygame.image.load("Images\Vert_Mort.png")
-        #             DEAD = pygame.transform.scale(DEAD, (55,55))
-        #             screen.blit(DEAD, (710, 470))
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            pygame.quit()
+                            sys.exit()
+                        elif event.type == pygame.MOUSEBUTTONDOWN:
+                            if event.button == 1:
+                                if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
+                                    run = False
+                                    break
+                                if BACK_DEAD.checkForInput(PLAY_MOUSE_POS):
+                                    run = False
+                                    break
 
-        #             for event in pygame.event.get():
-        #                 if event.type == pygame.QUIT:
-        #                     self.money += partie.Money
-        #                     pygame.quit()
-        #                     sys.exit()
-        #                 elif event.type == pygame.MOUSEBUTTONDOWN:
-        #                     if event.button == 1:
-        #                         if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
-        #                             self.money += partie.Money
-        #                             self.PAUSE = False
-        #                             run = False
-        #                             break
-        #                         if BACK_DEAD.checkForInput(PLAY_MOUSE_POS):
-        #                             self.money += partie.Money + int(partie.score_tot/10)
-        #                             self.PAUSE = False
-        #                             run = False
-        #                             break
-
-        #                 pygame.display.update()
+                        pygame.display.update()
 
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
@@ -132,87 +119,34 @@ def play(equipe, niveau, moves):
                                 run = False
                                 break
 
-        #         if not self.PAUSE:
-        #             if self.CHOICE == 5:
-        #                 if Loop_count % 15 == 0:
-        #                     partie.jouer(self.direction)
-        #                 if not partie.STOP:
-        #                     if Loop_count % 30 == 0:
-        #                         for _ in range(int(Loop_count/600)):
-        #                             partie.spawn ()
-        #                         if Loop_count % 75 == 0:
-        #                             partie.Slow_Down()
-        #                         if partie.Slow_On:
-        #                             partie.Slow_counter()
-        #                             if partie.Slow_count % 2 == 0:
-        #                                 partie.mouv_ennemie()
-        #                                 partie.spawn ()
-        #                         if not partie.Slow_On:
-        #                             partie.mouv_ennemie()
-        #                             partie.spawn ()
-        #         if not self.PAUSE and not partie.STOP:
-        #             if self.CHOICE == 2:
-        #                 if Loop_count % 40 == 0:
-        #                     if Loop_count % 200 == 0:
-        #                             partie.Slow_Down()
-        #                     if partie.Slow_On:
-        #                         partie.Slow_counter()
-        #                         if partie.Slow_count % 2 == 0:
-        #                             partie.mouv_ennemie()
-        #                             partie.spawn ()
-        #                     if not partie.Slow_On:
-        #                             partie.mouv_ennemie()
-        #                             partie.spawn ()
-        #                     for _ in range(int(Loop_count/800)):
-        #                         partie.spawn ()
-        #             if self.CHOICE == 3:
-        #                 if Loop_count % 25 == 0:
-        #                     for _ in range(int(Loop_count/500)):
-        #                         partie.spawn ()
-        #                     if Loop_count % 125 == 0:
-        #                         partie.Slow_Down()
-        #                     if partie.Slow_On:
-        #                         partie.Slow_counter()
-        #                         if partie.Slow_count % 2 == 0:
-        #                             partie.mouv_ennemie()
-        #                             partie.spawn ()
-        #                     if not partie.Slow_On:
-        #                         partie.mouv_ennemie()
-        #                         partie.spawn ()
-        #             if self.CHOICE == 4:
-        #                 if Loop_count % 15 == 0:
-        #                     for _ in range(int(Loop_count/300)):
-        #                         partie.spawn ()
-        #                     if Loop_count % 75 == 0:
-        #                         partie.Slow_Down()
-        #                     if partie.Slow_On:
-        #                         partie.Slow_counter()
-        #                         if partie.Slow_count % 2 == 0:
-        #                             partie.mouv_ennemie()
-        #                             partie.spawn ()
-        #                     if not partie.Slow_On:
-        #                         partie.mouv_ennemie()
-        #                         partie.spawn ()
-        #         if not self.PAUSE and partie.stop_counter != 0:
-        #             if Loop_count % 15 == 0:
-        #                 partie.stop()
-        #         if not self.PAUSE and partie.Kame_counter != 0:
-        #             if Loop_count % 15 == 0:
-        #                 partie.Kame_count()
-                    
                 
                 pygame.display.update()
                 end1 = time.perf_counter()
 
 def longmoves(moves):
     strmoves = []
+    score = 30
     for move in moves:
         if type(move) is str:
             strmoves += [move]
+            score -= 1
         elif type(move) is list:
             for i in range(move[0]):
-                strmoves += move[1:]
-    return strmoves
+                for move2 in move[1:]:
+                    if type(move2) is str:
+                        strmoves += [move2]
+                        score -= 1
+                    elif type(move2) is list:
+                        for j in range(move2[0]):
+                            for move3 in move2:
+                                if type(move3) is str:
+                                    strmoves += [move3]
+                                    score -= 1
+                                elif type(move3) is list:
+                                    score -= len(move3)-1
+                                    for i in range(move3[0]):
+                                        strmoves += move3[1:]
+    return strmoves, score
 
 
 
@@ -259,9 +193,3 @@ def main_menu(equipe, niveau, moves):
         pygame.display.update()
 
 
-
-equipe = 1
-niveau = 2
-moves = [[2,'avant'], 'tdroite', 'avant', 'Avant', 'avant', 'tdroite', 'Avant']
-
-main_menu(equipe, niveau, moves)

@@ -12,7 +12,7 @@ class SpaceAdventure():
         
         self.vaisseauD = pygame.transform.rotate(self.vaisseau, 270)
         
-        self.vaisseauG = pygame.transform.rotate(self.vaisseau, 180)
+        self.vaisseauG = pygame.transform.rotate(self.vaisseau, 90)
         
         self.vaisseauR = pygame.transform.rotate(self.vaisseau, 180)
         
@@ -61,15 +61,26 @@ class SpaceAdventure():
             tableau[2][2] = 6
             tableau[3,2:6] = 5
             tableau[2][5] = 5
-        elif niveau == 3 :
+        elif niveau == 3:
             taille = 9
             self.taille = taille
             tableau = self.initable(taille)
             tableau[7, 1] = 1
-            tableau[2, 2:6] = 5
-            tableau[5, 2:6] = 5
-            tableau[2:6, 2] = 5
-            tableau[2:6, 5] = 5
+            tableau[2, 2:7] = 5
+            tableau[6, 2:7] = 5
+            tableau[2:7, 2] = 5
+            tableau[2:7, 6] = 5
+        elif niveau == 4:
+            taille = 9
+            self.taille = taille
+            tableau = self.initable(taille)
+            tableau[7][4] = 1
+            tableau[1:7, 4] = 5
+            tableau[3][3] = 5
+            tableau[5][3] = 5
+            tableau[2][3] = 6
+            tableau[4][3] = 6
+            tableau[6][3] = 6
         return tableau
     
     def posi_vaisseau(self):
@@ -121,7 +132,7 @@ class SpaceAdventure():
     def tourner_G(self):
         val, posi = self.posi_vaisseau()
         if val == 1:
-            val == 5
+            val = 5
         self.tableau[posi[0][0]][posi[1][0]] = val-1
     
     def move(self, who, position):

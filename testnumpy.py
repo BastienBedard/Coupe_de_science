@@ -3,9 +3,10 @@ from main import main_menu
 
 
 equipe = 1
-niveau = 3
+niveau = 4
 # moves = [[2,'avant'], 'tdroite', 'avant', 'Avant', 'avant', 'tgauche', 'Avant']
-moves = ['tdroite', 'avant', 'tgauche', [4, [4,'avant'], 'tdroite']]
+# moves = ['tdroite', 'avant', 'tgauche', 'avant', [4, [4,'avant'], 'tdroite']]
+moves = [[3, [2,'avant'], 'tgauche', 'avant', [2, 'tdroite'], 'avant', 'tgauche']]
 main_menu(equipe, niveau, moves)
 
 # table = np.zeros((15, 15))

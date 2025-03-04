@@ -10,6 +10,7 @@ from utility import images
 I = images()
 
 from exploration_class import SpaceAdventure
+from Scores import write, read
 import numpy as np
 
 #Initialisation du Pygame
@@ -33,7 +34,7 @@ pygame.display.set_caption("Menu")
 
 #Font personnalisé
 def get_font(size):
-    return pygame.font.Font("fonts/font1.ttf", size)
+    return pygame.font.Font("fonts/Lato-Regular.ttf", size)
 
 #Liste des jeux
 def play(equipe, niveau, moves):
@@ -75,21 +76,22 @@ def play(equipe, niveau, moves):
                             partie.action(strmoves[move_count])
                     if fin:
                         level_score += partie.goldcount
+                        write(equipe=equipe, level=niveau, score=level_score)
                     move_count += 1
                 
                 if fin:
                     MORT_FOND = pygame.image.load("Images\Large_black_button.png")
-                    MORT_FOND_RECT = pygame.image.load("Images\Large_black_button.png").get_rect(center=(640, 300))
+                    MORT_FOND_RECT = pygame.image.load("Images\Large_black_button.png").get_rect(center=(640, 100))
                     MORT_TEXT = get_font(45).render("Vous êtes mort!", True, "#b68f40")
-                    MORT_RECT = MORT_TEXT.get_rect(center=(640, 300))
+                    MORT_RECT = MORT_TEXT.get_rect(center=(640, 100))
                     SCORE_TEXT = get_font(25).render(f'Votre score pour ce niveau est : {level_score}', True, "#b68f40")
-                    SCORE_RECT = SCORE_TEXT.get_rect(center=(640, 335))
+                    SCORE_RECT = SCORE_TEXT.get_rect(center=(640, 135))
                     SCREEN.blit(MORT_FOND, MORT_FOND_RECT)
                     SCREEN.blit(MORT_TEXT, MORT_RECT)
                     SCREEN.blit(SCORE_TEXT, SCORE_RECT)
 
-                    BACK_DEAD = Button(base_image=pygame.image.load("Images\Black_Button.png"), position=(640, 500), 
-                                        text_input="OK...", font=get_font(35), base_color="#b68f40", hovering_color="Green")
+                    BACK_DEAD = Button(base_image=pygame.image.load("Images\Black_Button.png"), position=(640, 200), 
+                                        text_input="Quit", font=get_font(35), base_color="#b68f40", hovering_color="Green")
 
                     BACK_DEAD.changeColor(PLAY_MOUSE_POS)
                     BACK_DEAD.update(SCREEN)
@@ -100,9 +102,6 @@ def play(equipe, niveau, moves):
                             sys.exit()
                         elif event.type == pygame.MOUSEBUTTONDOWN:
                             if event.button == 1:
-                                if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
-                                    run = False
-                                    break
                                 if BACK_DEAD.checkForInput(PLAY_MOUSE_POS):
                                     run = False
                                     break
@@ -119,6 +118,18 @@ def play(equipe, niveau, moves):
                                 run = False
                                 break
 
+                HIGH_SCORE_TEXT = get_font(35).render(f"Meilleur score : {read(equipe=equipe, level=niveau)}", True, "black")
+                HIGH_SCORE_RECT = HIGH_SCORE_TEXT.get_rect(center=(300, 100))
+
+                EQUIPE_TEXT = get_font(35).render(f"Équipe : {equipe}", True, "white")
+                EQUIPE_RECT = EQUIPE_TEXT.get_rect(center=(600, 100))
+                
+                NIVEAU_TEXT = get_font(35).render(f"Niveau : {niveau}", True, "black")
+                NIVEAU_RECT = NIVEAU_TEXT.get_rect(center=(900, 100))
+                
+                SCREEN.blit(HIGH_SCORE_TEXT, HIGH_SCORE_RECT)
+                SCREEN.blit(EQUIPE_TEXT, EQUIPE_RECT)
+                SCREEN.blit(NIVEAU_TEXT, NIVEAU_RECT)
                 
                 pygame.display.update()
                 end1 = time.perf_counter()

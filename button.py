@@ -2,7 +2,7 @@ import pygame
 
 class Button:
     def __init__(self, base_image, position, text_input, font, base_color, hovering_color, hovering_image=None):
-        
+
         self.hovering_image, self.base_image = hovering_image, base_image
         self.image = self.base_image
 
@@ -42,4 +42,3 @@ class Button:
             self.image = self.hovering_image
         else:
             self.image = self.base_image
-

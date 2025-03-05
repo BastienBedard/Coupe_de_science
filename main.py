@@ -4,7 +4,6 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 from turtle import Screen, update
 import pygame, sys
 import time
-import exploration_main
 from button import Button
 from utility import images
 I = images()

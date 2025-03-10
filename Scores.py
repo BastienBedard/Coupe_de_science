@@ -44,3 +44,5 @@ def read(equipe, level='all'):
 def reset():
     openfile()
     closefile({})
+
+# reset()

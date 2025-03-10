@@ -1,9 +1,10 @@
+"""Blah Blah Blah"""
+
 import os
-import pygame
 import sys
 import time
+import pygame
 import numpy as np
-from turtle import Screen
 from button import Button
 from utility import images
 from exploration_class import SpaceAdventure
@@ -63,11 +64,7 @@ def play(equipe: int, niveau: int, moves: list):
             # Condition to do the next move.
             if (Loop_count + 1) % 35 == 1 and not fin and not pause:
                 partie.posi_vaisseau()
-                if len(np.where(partie.tableau == 5)[0]) == 0:
-                    # Toutes les minerais ont été récolté.
-                    fin = True
-                    type_fin = 'Félicitation, vous avez réussi !'
-                elif partie.mort:
+                if partie.mort:
                     # Le vaisseau a crash dans les météorites.
                     fin = True
                     type_fin = 'Vous êtes mort !'
@@ -76,6 +73,10 @@ def play(equipe: int, niveau: int, moves: list):
                         # Tous les moves ont été fait.
                         fin = True
                         type_fin = "Vous n'avez pas récolté tous les minerais"
+                        if len(np.where(partie.tableau == 5)[0]) == 0:
+                            # Toutes les minerais ont été récolté.
+                            level_score += 100
+                            type_fin = 'Félicitation, vous avez réussi !'
                     else:
                         # Si tout est ok on fait le prochain move.
                         partie.action(strmoves[move_count])
@@ -160,26 +161,28 @@ def longmoves(moves: list):
         strmoves (list): List with only string of moves.
         score (int): The score calculated.
     """
+    if moves == ['']:
+        raise ValueError("\n\n\n\n\n Aucune commande n'a été indiqué dans la liste de coups\n\n")
     strmoves = []
-    score = 30
+    score = 50
     for move in moves:
         if isinstance(move, str):
             strmoves += [move]
-            score -= 1
+            score -= len(moves)
         elif isinstance(move, list):
             for i in range(move[0]):
                 for move2 in move[1:]:
                     if isinstance(move2, str):
                         strmoves += [move2]
-                        score -= 1
+                        score -= len(moves)-2
                     elif isinstance(move2, list):
                         for j in range(move2[0]):
                             for move3 in move2:
                                 if isinstance(move3, str):
                                     strmoves += [move3]
-                                    score -= 1
+                                    score -= len(moves)-2
                                 elif isinstance(move3, list):
-                                    score -= len(move3)-1
+                                    score -= len(move3)-2
                                     for i in range(move3[0]):
                                         strmoves += move3[1:]
     return strmoves, score

@@ -7,25 +7,29 @@ class SpaceAdventure():
         Class that control the game board and displays the current state of the game. 
     """
     def __init__(self, niveau: int):
-        self.tableau = self.niveau(niveau)
+        self.niveau = niveau
+        self.tableau = self.niveau_choice()
 
+        scalesize = 64
+        if niveau == 5:
+            scalesize=50
         self.vaisseau = pygame.image.load("Images\Vaisseau.png")
-        self.vaisseau = pygame.transform.scale(self.vaisseau, (64,64))
+        self.vaisseau = pygame.transform.scale(self.vaisseau, (scalesize, scalesize))
         self.vaisseauD = pygame.transform.rotate(self.vaisseau, 270)
         self.vaisseauG = pygame.transform.rotate(self.vaisseau, 90)
         self.vaisseauR = pygame.transform.rotate(self.vaisseau, 180)
 
         self.meteor = pygame.image.load("Images\météorites.png")
-        self.meteor = pygame.transform.scale(self.meteor, (64,64))
+        self.meteor = pygame.transform.scale(self.meteor, (scalesize, scalesize))
 
         self.Kaboom = pygame.image.load("Images\Kaboom.png")
-        self.Kaboom = pygame.transform.scale(self.Kaboom, (64,64))
+        self.Kaboom = pygame.transform.scale(self.Kaboom, (scalesize, scalesize))
 
         self.PepeTagPlay_BG = pygame.image.load("Images\BackgroundMenu.png")
         self.PepeTagPlay_BG = pygame.transform.scale(self.PepeTagPlay_BG, (1280,720))
 
-        self.gold = pygame.image.load("Images\Piere6.png")
-        self.gold = pygame.transform.scale(self.gold, (64,64))
+        self.gold = pygame.image.load("Images\gold.png")
+        self.gold = pygame.transform.scale(self.gold, (scalesize, scalesize))
 
         self.Window_Size = (1280, 720)
         self.goldcount = 0
@@ -44,14 +48,14 @@ class SpaceAdventure():
         table[:,taille-1] = 6
         return table
 
-    def niveau(self, niveau: int):
-        if niveau == 1:
+    def niveau_choice(self):
+        if self.niveau == 1:
             taille = 7
             self.taille = taille
             tableau = self.initable(taille)
             tableau[5][3] = 1
             tableau[1:5,3] = 5
-        elif niveau == 2:
+        elif self.niveau == 2:
             taille = 7
             tableau = self.initable(taille)
             self.taille = taille
@@ -60,7 +64,7 @@ class SpaceAdventure():
             tableau[2][2] = 6
             tableau[3,2:6] = 5
             tableau[2][5] = 5
-        elif niveau == 3:
+        elif self.niveau == 3:
             taille = 9
             self.taille = taille
             tableau = self.initable(taille)
@@ -69,7 +73,7 @@ class SpaceAdventure():
             tableau[6, 2:7] = 5
             tableau[2:7, 2] = 5
             tableau[2:7, 6] = 5
-        elif niveau == 4:
+        elif self.niveau == 4:
             taille = 9
             self.taille = taille
             tableau = self.initable(taille)
@@ -80,6 +84,26 @@ class SpaceAdventure():
             tableau[2][3] = 6
             tableau[4][3] = 6
             tableau[6][3] = 6
+            tableau[6][3] = 6
+            tableau[1][3] = 6
+            tableau[7][3] = 6
+        elif self.niveau == 5:
+            taille = 11
+            self.taille = taille
+            tableau = self.initable(taille)
+            tableau[1][5] = 3
+            tableau[4][3] = 5
+            tableau[6][3] = 5
+            tableau[8][3] = 5
+            tableau[2][3] = 5
+            tableau[4][5] = 5
+            tableau[6][5] = 5
+            tableau[8][5] = 5
+            tableau[2][5] = 5
+            tableau[4][7] = 5
+            tableau[6][7] = 5
+            tableau[8][7] = 5
+            tableau[2][7] = 5
         return tableau
 
     def posi_vaisseau(self):
@@ -142,7 +166,7 @@ class SpaceAdventure():
         if position == 0:
             position = who
         elif position == 5:
-            self.goldcount += 1
+            self.goldcount += 50
             position = who
         elif position == 6:
             position = 7
@@ -150,6 +174,8 @@ class SpaceAdventure():
 
     def displayScreen(self, screen):
         square_dim = int(self.Window_Size [0] /20)
+        if self.niveau == 5:
+            square_dim = 50
         # square = pygame.Surface((square_dim,square_dim))
         screen.blit(self.PepeTagPlay_BG, (0, 0))
 

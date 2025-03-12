@@ -45,4 +45,13 @@ def reset():
     openfile()
     closefile({})
 
+def print_scores():
+    scoresdict = openfile()
+    for key in scoresdict.keys():
+        score_tot = 0
+        for key2 in scoresdict[key].keys():
+            score_tot += scoresdict[key][key2]
+        print(key, f' = {score_tot/50}')
+
+# print_scores()
 # reset()

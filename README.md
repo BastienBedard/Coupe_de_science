@@ -2,7 +2,7 @@
 
 Le fichier main gère l'affichage de pygame et des boutons.
 Le fichier exploration_class gère le jeu en soit et les commandes qui rendent le jeu fonctionnel.
-Le fichier scores sert a gérer l'écriture et la lecture du fichier json des scores.
+Le fichier gestion_scores sert a gérer l'écriture et la lecture du fichier json des scores.
 
 Le fichier zone de jeu est le seul fichier qui doit être modifier par le joueur, il permait de donner au jeu les informations nécessaire au déroulement de la partie.
 
@@ -22,7 +22,7 @@ Les coups possibles sont:
 
 Les commandes sont écrite dans une liste de coups:
 
-coups = ['commande1', 'commande2', 'commande3', etc]
+coups = ['commande1', 'commande2', 'commande3', etc]   ou les commandes sont soit 'avant', 'tdroite' ou 'tgauche'
 
 
 
@@ -35,7 +35,14 @@ Exemple:
 coups = ['commande1', [2, 'avant', 'tdroite'], 'commande2'] = ['commande1', 'avant', 'tdroite', 'avant', 'tdroite', 'commande2'] 
 
 
+Il est aussi possible de mettre des boucles dans des boucles:
+
+Exemples:
+coups = ['commande1', [2, [3, 'avant'], 'tgauche']] 
+      = ['commande1', 'avant', 'avant', 'avant', 'tgauche', 'avant', 'avant', 'avant', 'tgauche']
+
 #   COMMENT GAGNER !
 
-Les points sont calculé selon la nombre de commandes que vous avez donner pour réussir chaque niveau (Le moins possible)
+Les points sont calculé selon la nombre de commandes que vous avez donner pour réussir chaque niveau (Le moins possible donc essayer les boucles)
+
 Vous avez des points pour chaque minerai que vous réussissez à récupérer et des points bonus si vous les récupérer tous dans un même niveau.

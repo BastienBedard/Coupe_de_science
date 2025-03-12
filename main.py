@@ -8,7 +8,7 @@ import numpy as np
 from button import Button
 from utility import images
 from exploration_class import SpaceAdventure
-from scores import write, read
+from gestion_scores import write, read
 
 
 I = images()
@@ -46,7 +46,8 @@ def play(equipe: int, niveau: int, moves: list):
 
     start_time = time.perf_counter()
     endtime = time.perf_counter()
-    strmoves, level_score = longmoves(moves)
+    strmoves, level_score = longmoves(moves, niveau)
+    best_score = [300, 300, 700, 450, 700]
     fin = False
     pause = True
     type_fin = 'Erreur'
@@ -62,7 +63,7 @@ def play(equipe: int, niveau: int, moves: list):
             partie.displayScreen(SCREEN)
 
             # Condition to do the next move.
-            if (Loop_count + 1) % 35 == 1 and not fin and not pause:
+            if (Loop_count + 1) % 20 == 1 and not fin and not pause:
                 partie.posi_vaisseau()
                 if partie.mort:
                     # Le vaisseau a crash dans les météorites.
@@ -83,6 +84,7 @@ def play(equipe: int, niveau: int, moves: list):
                 if fin:
                     # Calcul les scores à la fin.
                     level_score += partie.goldcount
+                    level_score = int(1000*level_score/best_score[niveau])
                     write(equipe=equipe, level=niveau, score=level_score)
                 move_count += 1
 
@@ -130,7 +132,7 @@ def play(equipe: int, niveau: int, moves: list):
             # Boutton pour quitter le jeu
 
             QUIT = Button(base_image=pygame.Surface((200, 100)), position=(1100, 350),
-                                    text_input="Quiter", font=get_font(55), base_color="#b68f40",
+                                    text_input="Quitter", font=get_font(55), base_color="#b68f40",
                                     hovering_color="Green")
 
             QUIT.changeColor(PLAY_MOUSE_POS)
@@ -150,7 +152,7 @@ def play(equipe: int, niveau: int, moves: list):
             pygame.display.update()
             endtime = time.perf_counter()
 
-def longmoves(moves: list):
+def longmoves(moves: list, niveau: int):
     """ Calculate the score for the number of moves 
         and rewrite the loop as sequence of moves.
 
@@ -161,28 +163,30 @@ def longmoves(moves: list):
         strmoves (list): List with only string of moves.
         score (int): The score calculated.
     """
+    best_solution = [0, 2, 4, 5, 7]
     if moves == ['']:
         raise ValueError("\n\n\n\n\n Aucune commande n'a été indiqué dans la liste de coups\n\n")
     strmoves = []
-    score = 50
+    score = best_solution[niveau] - len(moves) + 1
     for move in moves:
         if isinstance(move, str):
             strmoves += [move]
-            score -= len(moves)
         elif isinstance(move, list):
+            score -= len(move)-2
             for i in range(move[0]):
                 for move2 in move[1:]:
                     if isinstance(move2, str):
                         strmoves += [move2]
-                        score -= len(moves)-2
                     elif isinstance(move2, list):
+                        if i == 0:
+                            score -= len(move2)-2
                         for j in range(move2[0]):
-                            for move3 in move2:
+                            for move3 in move2[1:]:
                                 if isinstance(move3, str):
                                     strmoves += [move3]
-                                    score -= len(moves)-2
                                 elif isinstance(move3, list):
-                                    score -= len(move3)-2
+                                    if j == 0:
+                                        score -= len(move3)-2
                                     for i in range(move3[0]):
                                         strmoves += move3[1:]
-    return strmoves, score
+    return strmoves, score*10

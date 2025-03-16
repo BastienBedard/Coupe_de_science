@@ -152,6 +152,19 @@ def play(equipe: int, niveau: int, moves: list):
             pygame.display.update()
             endtime = time.perf_counter()
 
+def recursive_moves(moves: list, strmoves: list, score: int):
+    for i in range(moves[0]):
+        for move in moves:
+            if isinstance(move, str):
+                strmoves += [move]
+            elif isinstance(move, list):
+                if i == 0:
+                    score -= len(move)-2
+                recursive_moves(move, strmoves, score)
+    return strmoves, score
+    
+    
+
 def longmoves(moves: list, niveau: int):
     """ Calculate the score for the number of moves 
         and rewrite the loop as sequence of moves.
@@ -168,25 +181,9 @@ def longmoves(moves: list, niveau: int):
         raise ValueError("\n\n\n\n\n Aucune commande n'a été indiqué dans la liste de coups\n\n")
     strmoves = []
     score = best_solution[niveau] - len(moves) + 1
-    for move in moves:
-        if isinstance(move, str):
-            strmoves += [move]
-        elif isinstance(move, list):
-            score -= len(move)-2
-            for i in range(move[0]):
-                for move2 in move[1:]:
-                    if isinstance(move2, str):
-                        strmoves += [move2]
-                    elif isinstance(move2, list):
-                        if i == 0:
-                            score -= len(move2)-2
-                        for j in range(move2[0]):
-                            for move3 in move2[1:]:
-                                if isinstance(move3, str):
-                                    strmoves += [move3]
-                                elif isinstance(move3, list):
-                                    if j == 0:
-                                        score -= len(move3)-2
-                                    for i in range(move3[0]):
-                                        strmoves += move3[1:]
+
+    moves = [1] + moves
+    print(moves)
+    strmoves, score = recursive_moves(moves, strmoves, score)
+    
     return strmoves, score*10

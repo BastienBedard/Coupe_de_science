@@ -8,5 +8,5 @@ from main import play
 
 EQUIPE = 0
 NIVEAU = 0
-coups = ['avant']
+coups = [[2, 'avant'], 'tdroite', [4, [2, 'avant'], 'tgauche']]
 play(equipe = EQUIPE, niveau = NIVEAU, moves = coups)

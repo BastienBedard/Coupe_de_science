@@ -31,7 +31,7 @@ def get_font(size: int):
     Returns:
         font?: An font object.
     """
-    return pygame.font.Font("fonts/Lato-Regular.ttf", size)
+    return pygame.font.Font("Fonts/Lato-Regular.ttf", size)
 
 # Gestion de tout l'interface de jeu.
 def play(equipe: int, niveau: int, moves: list):

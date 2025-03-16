@@ -13,22 +13,22 @@ class SpaceAdventure():
         scalesize = 64
         if niveau == 4:
             scalesize=50
-        self.vaisseau = pygame.image.load("Images\Vaisseau.png")
+        self.vaisseau = pygame.image.load("Images/Vaisseau.png")
         self.vaisseau = pygame.transform.scale(self.vaisseau, (scalesize, scalesize))
         self.vaisseauD = pygame.transform.rotate(self.vaisseau, 270)
         self.vaisseauG = pygame.transform.rotate(self.vaisseau, 90)
         self.vaisseauR = pygame.transform.rotate(self.vaisseau, 180)
 
-        self.meteor = pygame.image.load("Images\météorites.png")
+        self.meteor = pygame.image.load("Images/Meteorites.png")
         self.meteor = pygame.transform.scale(self.meteor, (scalesize, scalesize))
 
-        self.Kaboom = pygame.image.load("Images\Kaboom.png")
+        self.Kaboom = pygame.image.load("Images/Kaboom.png")
         self.Kaboom = pygame.transform.scale(self.Kaboom, (scalesize, scalesize))
 
-        self.PepeTagPlay_BG = pygame.image.load("Images\BackgroundMenu.png")
+        self.PepeTagPlay_BG = pygame.image.load("Images/BackgroundMenu.png")
         self.PepeTagPlay_BG = pygame.transform.scale(self.PepeTagPlay_BG, (1280,720))
 
-        self.gold = pygame.image.load("Images\gold.png")
+        self.gold = pygame.image.load("Images/gold.png")
         self.gold = pygame.transform.scale(self.gold, (scalesize, scalesize))
 
         self.Window_Size = (1280, 720)
@@ -38,7 +38,7 @@ class SpaceAdventure():
         self.end = False
 
     def get_font(self, size: int):
-        return pygame.font.Font("fonts/font1.ttf", size)
+        return pygame.font.Font("Fonts/font1.ttf", size)
 
     def initable(self, taille: int):
         table = np.zeros((taille, taille))

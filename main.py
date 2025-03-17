@@ -18,7 +18,8 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 pygame.init()
 
 #Size/Resolution de la window
-SCREEN = pygame.display.set_mode((1280,720), pygame.FULLSCREEN)
+SCREEN = pygame.display.set_mode((1280,720), pygame.SCALED)
+pygame.display.toggle_fullscreen()
 pygame.display.set_caption("Jeux")
 
 #Font personnalisé

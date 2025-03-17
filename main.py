@@ -183,7 +183,6 @@ def longmoves(moves: list, niveau: int):
     score = best_solution[niveau] - len(moves) + 1
 
     moves = [1] + moves
-    print(moves)
     strmoves, score = recursive_moves(moves, strmoves, score)
     
     return strmoves, score*10

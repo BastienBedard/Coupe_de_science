@@ -45,16 +45,18 @@ def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 12, time
     """
     partie = SpaceAdventure(niveau)
     
-    FAST_MODES = 4
-    fast_mode = 1
     number_of_frames_init = number_of_frames
 
+    FAST_MODES = 4
+    fast_mode = 1
     start_time = time.perf_counter()
     endtime = time.perf_counter()
-    strmoves, level_score = longmoves(moves, niveau)
-    best_score = [300, 300, 700, 450, 700]
     fin = False
     pause = True
+    
+    best_score = [300, 300, 700, 450, 700]
+    strmoves, level_score = longmoves(moves, niveau)
+    
     type_fin = 'Erreur'
     Loop_count = 0
     move_count = 0
@@ -127,29 +129,31 @@ def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 12, time
             pause_text_input = 'Play'
             if not pause:
                 pause_text_input = 'Pause'
-
             PAUSE = Button(base_image=pygame.Surface((200, 100)), position=(200, 350),
                                 text_input=pause_text_input, font=get_font(65),
                                 base_color="#b68f40", hovering_color="Green")
-
             PAUSE.changeColor(PLAY_MOUSE_POS)
             PAUSE.update(SCREEN)
 
             # Boutton pour quitter le jeu
-
             QUIT = Button(base_image=pygame.Surface((200, 100)), position=(1100, 350),
                                     text_input="Quitter", font=get_font(55), base_color="#b68f40",
                                     hovering_color="Green")
-
             QUIT.changeColor(PLAY_MOUSE_POS)
             QUIT.update(SCREEN)
             
+            # Boutton pour changer la vitesse du jeu
             fast_text_input = f"x{fast_mode} >>"
             if fast_mode == 4:
                 fast_text_input = "MAX >>"
             FAST = Button(base_image=pygame.Surface((200, 100)), position=(200, 550),text_input=fast_text_input, font=get_font(55), base_color="#b68f40",hovering_color="Green")
             FAST.changeColor(PLAY_MOUSE_POS)
             FAST.update(SCREEN)
+            
+            # Boutton pour rejouer le niveau
+            REPLAY = Button(base_image=pygame.Surface((200, 100)), position=(1100, 550),text_input="Rejouer", font=get_font(55), base_color="#b68f40",hovering_color="Green")
+            REPLAY.changeColor(PLAY_MOUSE_POS)
+            REPLAY.update(SCREEN)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -159,6 +163,19 @@ def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 12, time
                     if event.button == 1:
                         if PAUSE.checkForInput(PLAY_MOUSE_POS):
                             pause = not pause
+                            if (not pause) and fin:
+                                fin = False
+                                partie = SpaceAdventure(niveau)
+                                move_count = 0
+                                Loop_count = 0
+                                strmoves, level_score = longmoves(moves, niveau)
+                        elif REPLAY.checkForInput(PLAY_MOUSE_POS):
+                            pause = True
+                            fin = False
+                            partie = SpaceAdventure(niveau)
+                            move_count = 0
+                            Loop_count = 0
+                            strmoves, level_score = longmoves(moves, niveau)
                         elif FAST.checkForInput(PLAY_MOUSE_POS):
                             fast_mode = (fast_mode) % FAST_MODES + 1
                             if fast_mode == 4:

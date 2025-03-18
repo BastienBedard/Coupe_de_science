@@ -35,7 +35,7 @@ def get_font(size: int):
     return pygame.font.Font("Fonts/Lato-Regular.ttf", size)
 
 # Gestion de tout l'interface de jeu.
-def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 12, time_interval: float = 0.1):
+def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 18, time_interval: float = 0.1):
     """ Function that leads the whole game.
 
     Args:

@@ -8,9 +8,9 @@ Le fichier zone de jeu est le seul fichier qui doit être modifier par le joueur
 
 # Comment jouer
 
-Dans zone_de_jeu vous inquez votre numéro d'équipe et le niveau que vous désirez tanter, puis vous donner la liste des coups que vous désirez jouer pour ce niveau.
+Dans zone_de_jeu vous indiquez votre numéro d'équipe et le niveau que vous désirez tanter, puis vous donner la liste des coups que vous désirez jouer pour ce niveau.
 
-Les coups possibles sont:
+Les commandes possibles sont:
 
 'avant' : Fait avancer le vaisseau d'une case vers l'avant.
 

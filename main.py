@@ -35,7 +35,7 @@ def get_font(size: int):
     return pygame.font.Font("Fonts/Lato-Regular.ttf", size)
 
 # Gestion de tout l'interface de jeu.
-def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 18, time_interval: float = 0.1):
+def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 15, time_interval: float = 0.1):
     """ Function that leads the whole game.
 
     Args:
@@ -144,7 +144,7 @@ def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 18, time
             
             # Boutton pour changer la vitesse du jeu
             fast_text_input = f"x{fast_mode} >>"
-            if fast_mode == 4:
+            if fast_mode == FAST_MODES:
                 fast_text_input = "MAX >>"
             FAST = Button(base_image=pygame.Surface((200, 100)), position=(200, 550),text_input=fast_text_input, font=get_font(55), base_color="#b68f40",hovering_color="Green")
             FAST.changeColor(PLAY_MOUSE_POS)
@@ -178,7 +178,7 @@ def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 18, time
                             strmoves, level_score = longmoves(moves, niveau)
                         elif FAST.checkForInput(PLAY_MOUSE_POS):
                             fast_mode = (fast_mode) % FAST_MODES + 1
-                            if fast_mode == 4:
+                            if fast_mode == FAST_MODES:
                                 number_of_frames = 1
                             else:
                                 number_of_frames = int(number_of_frames_init/(fast_mode))

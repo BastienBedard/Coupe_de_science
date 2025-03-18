@@ -35,7 +35,7 @@ def get_font(size: int):
     return pygame.font.Font("Fonts/Lato-Regular.ttf", size)
 
 # Gestion de tout l'interface de jeu.
-def play(equipe: int, niveau: int, moves: list):
+def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 12, time_interval: float = 0.1):
     """ Function that leads the whole game.
 
     Args:
@@ -44,6 +44,10 @@ def play(equipe: int, niveau: int, moves: list):
         moves (list): La liste des coups pour le niveau.
     """
     partie = SpaceAdventure(niveau)
+    
+    FAST_MODES = 4
+    fast_mode = 1
+    number_of_frames_init = number_of_frames
 
     start_time = time.perf_counter()
     endtime = time.perf_counter()
@@ -57,14 +61,15 @@ def play(equipe: int, niveau: int, moves: list):
     run = True
     while run:
         # slow down the loop
-        if (int(endtime-start_time+1) * 10) % 5 == 0:
+        endtime = time.perf_counter()
+        if (endtime - start_time) >= time_interval:
             Loop_count += 1
 
             PLAY_MOUSE_POS = pygame.mouse.get_pos()
             partie.displayScreen(SCREEN)
 
             # Condition to do the next move.
-            if (Loop_count + 1) % 20 == 1 and not fin and not pause:
+            if (Loop_count) % (number_of_frames) == 0 and not fin and not pause:
                 partie.posi_vaisseau()
                 if partie.mort:
                     # Le vaisseau a crash dans les météorites.
@@ -138,6 +143,13 @@ def play(equipe: int, niveau: int, moves: list):
 
             QUIT.changeColor(PLAY_MOUSE_POS)
             QUIT.update(SCREEN)
+            
+            fast_text_input = f"x{fast_mode} >>"
+            if fast_mode == 4:
+                fast_text_input = "MAX >>"
+            FAST = Button(base_image=pygame.Surface((200, 100)), position=(200, 550),text_input=fast_text_input, font=get_font(55), base_color="#b68f40",hovering_color="Green")
+            FAST.changeColor(PLAY_MOUSE_POS)
+            FAST.update(SCREEN)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -147,24 +159,35 @@ def play(equipe: int, niveau: int, moves: list):
                     if event.button == 1:
                         if PAUSE.checkForInput(PLAY_MOUSE_POS):
                             pause = not pause
+                        elif FAST.checkForInput(PLAY_MOUSE_POS):
+                            fast_mode = (fast_mode) % FAST_MODES + 1
+                            if fast_mode == 4:
+                                number_of_frames = 1
+                            else:
+                                number_of_frames = int(number_of_frames_init/(fast_mode))
                         elif QUIT.checkForInput(PLAY_MOUSE_POS):
                             run = False
                             break
             pygame.display.update()
-            endtime = time.perf_counter()
+            start_time = endtime
 
-def recursive_moves(moves: list, strmoves: list, score: int):
+def recursive_moves(moves: list, strmoves: list):
     for i in range(moves[0]):
         for move in moves:
             if isinstance(move, str):
                 strmoves += [move]
             elif isinstance(move, list):
-                if i == 0:
-                    score -= len(move)-2
-                recursive_moves(move, strmoves, score)
-    return strmoves, score
+                strmoves = recursive_moves(move, strmoves)
+    return strmoves
     
-    
+def count_scores(moves:list):
+    count = 0
+    for move in moves:
+        if isinstance(move, str):
+            count += 1
+        elif isinstance(move, list):
+            count += count_scores(move)
+    return count
 
 def longmoves(moves: list, niveau: int):
     """ Calculate the score for the number of moves 
@@ -177,13 +200,14 @@ def longmoves(moves: list, niveau: int):
         strmoves (list): List with only string of moves.
         score (int): The score calculated.
     """
-    best_solution = [0, 2, 4, 5, 7]
+    best_solution = [1, 3, 5, 6, 8]
     if moves == ['']:
         raise ValueError("\n\n\n\n\n Aucune commande n'a été indiqué dans la liste de coups\n\n")
     strmoves = []
-    score = best_solution[niveau] - len(moves) + 1
+    best_score = best_solution[niveau]
 
     moves = [1] + moves
-    strmoves, score = recursive_moves(moves, strmoves, score)
+    strmoves = recursive_moves(moves, strmoves)
+    score = best_score - count_scores(moves)
     
     return strmoves, score*10

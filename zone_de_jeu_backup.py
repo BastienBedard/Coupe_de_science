@@ -7,9 +7,16 @@ puis écriver les différentes commandes que vous voulez donner au vaisseau.
 from main import play
 
 
+
+
 EQUIPE = 0
+
 NIVEAU = 0
+
 coups = [[2, 'avant'], 'tdroite', [4, [2, 'avant'], 'tgauche']]
+
+
+
 
 
 

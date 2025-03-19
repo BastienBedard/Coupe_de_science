@@ -35,7 +35,7 @@ def get_font(size: int):
     return pygame.font.Font("Fonts/Lato-Regular.ttf", size)
 
 # Gestion de tout l'interface de jeu.
-def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 15, time_interval: float = 0.1):
+def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 12, time_interval: float = 0.1):
     """ Function that leads the whole game.
 
     Args:
@@ -55,7 +55,10 @@ def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 15, time
     pause = True
     
     best_score = [300, 300, 700, 450, 700]
-    strmoves, level_score = longmoves(moves, niveau)
+    strmoves_init, level_score_init = longmoves(moves, niveau)
+    strmoves = strmoves_init
+    level_score = level_score_init
+    total_score = 0
     
     type_fin = 'Erreur'
     Loop_count = 0
@@ -92,8 +95,8 @@ def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 15, time
                 if fin:
                     # Calcul les scores à la fin.
                     level_score += partie.goldcount
-                    level_score = int(1000*level_score/best_score[niveau])
-                    write(equipe=equipe, level=niveau, score=level_score)
+                    total_score = int(1000*level_score/best_score[niveau])
+                    write(equipe=equipe, level=niveau, score=total_score)
                 move_count += 1
 
             if fin:
@@ -101,7 +104,7 @@ def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 15, time
                 MORT_FOND_RECT = MORT_FOND.get_rect(center=(640, 100))
                 MORT_TEXT = get_font(45).render(type_fin, True, "#b68f40")
                 MORT_RECT = MORT_TEXT.get_rect(center=(640, 100))
-                SCORE_TEXT = get_font(25).render(f'Votre score pour ce niveau est : {level_score}',
+                SCORE_TEXT = get_font(25).render(f'Votre score pour ce niveau est : {total_score}',
                                                     True, "#b68f40")
                 SCORE_RECT = SCORE_TEXT.get_rect(center=(640, 135))
                 SCREEN.blit(MORT_FOND, MORT_FOND_RECT)
@@ -168,14 +171,14 @@ def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 15, time
                                 partie = SpaceAdventure(niveau)
                                 move_count = 0
                                 Loop_count = 0
-                                strmoves, level_score = longmoves(moves, niveau)
+                                strmoves, level_score = strmoves_init, level_score_init
                         elif REPLAY.checkForInput(PLAY_MOUSE_POS):
                             pause = True
                             fin = False
                             partie = SpaceAdventure(niveau)
                             move_count = 0
                             Loop_count = 0
-                            strmoves, level_score = longmoves(moves, niveau)
+                            strmoves, level_score = strmoves_init, level_score_init
                         elif FAST.checkForInput(PLAY_MOUSE_POS):
                             fast_mode = (fast_mode) % FAST_MODES + 1
                             if fast_mode == FAST_MODES:

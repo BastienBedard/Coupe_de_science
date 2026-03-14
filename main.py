@@ -57,8 +57,6 @@ def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 12, time
     level_score = level_score_init + 100
     total_score = 0
     
-    print(level_score)
-    
     type_fin = 'Erreur'
     Loop_count = 0
     move_count = 0
@@ -84,7 +82,7 @@ def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 12, time
                     if move_count == len(strmoves):
                         # Tous les moves ont été fait.
                         fin = True
-                        type_fin = "Vous n'avez pas récolté tous les minerais"
+                        type_fin = "Vous n'avez pas tout récolté"
                         if len(np.where(partie.tableau == 5)[0]) == 0:
                             # Toutes les minerais ont été récolté.
                             level_score += 100

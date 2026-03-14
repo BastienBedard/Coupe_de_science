@@ -6,12 +6,9 @@ import time
 import pygame
 import numpy as np
 from button import Button
-from utility import images
 from exploration_class import SpaceAdventure
 from gestion_scores import write, read
 
-
-I = images()
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 #Initialisation de Pygame
@@ -54,11 +51,13 @@ def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 12, time
     fin = False
     pause = True
     
-    best_score = [300, 300, 700, 450, 700]
+    best_score = [500, 500, 700, 650, 900]
     strmoves_init, level_score_init = longmoves(moves, niveau)
     strmoves = strmoves_init
-    level_score = level_score_init
+    level_score = level_score_init + 100
     total_score = 0
+    
+    print(level_score)
     
     type_fin = 'Erreur'
     Loop_count = 0
@@ -80,6 +79,7 @@ def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 12, time
                     # Le vaisseau a crash dans les météorites.
                     fin = True
                     type_fin = 'Vous êtes mort !'
+                    level_score -= 100
                 else:
                     if move_count == len(strmoves):
                         # Tous les moves ont été fait.
@@ -96,6 +96,7 @@ def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 12, time
                     # Calcul les scores à la fin.
                     level_score += partie.goldcount
                     total_score = int(1000*level_score/best_score[niveau])
+                    # total_score = level_score
                     write(equipe=equipe, level=niveau, score=total_score)
                 move_count += 1
 
@@ -220,7 +221,7 @@ def longmoves(moves: list, niveau: int):
         strmoves (list): List with only string of moves.
         score (int): The score calculated.
     """
-    best_solution = [1, 3, 5, 6, 8]
+    best_solution = [1, 3, 4, 6, 7]
     if moves == ['']:
         raise ValueError("\n\n\n\n\n Aucune commande n'a été indiqué dans la liste de coups\n\n")
     strmoves = []
@@ -230,4 +231,8 @@ def longmoves(moves: list, niveau: int):
     strmoves = recursive_moves(moves, strmoves)
     score = best_score - count_scores(moves)
     
-    return strmoves, score*10
+    if score == 0:
+        score = 5
+    elif score > 0:
+        score = 0
+    return strmoves, score*20

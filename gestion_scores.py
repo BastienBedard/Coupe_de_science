@@ -1,7 +1,5 @@
 import json
 
-
-
 def openfile():
     with open('./Scores.json') as file:
         scoresdict = json.load(file)
@@ -12,7 +10,6 @@ def closefile(scoresdict):
 
     with open("Scores.json", "w") as outfile:
         outfile.write(json_object)
-
 
 def write(equipe, level, score):
     scoresdict = openfile()
@@ -41,7 +38,7 @@ def read(equipe, level='all'):
             score_tot += scoresdict[f'equipe{equipe}'][key]
         return score_tot
 
-def reset():
+def reset_score():
     openfile()
     closefile({})
 
@@ -53,5 +50,15 @@ def print_scores():
             score_tot += scoresdict[key][key2]
         print(key, f' = {score_tot/50}')
 
+
+# coups = ['avant', [4, [3, 'avant'], 'tdroite']] #1
+
+# coups = [[2, [5, 'avant'], 'tdroite'], [3, [4, 'avant'], 'tdroite']] #2
+
+# coups = [[3, 'tgauche', 'avant', [2, 'tdroite'], 'avant', 'tgauche', [2,'avant']], 'tdroite'] # 3
+
+# coups = [[2, 'tdroite', [7, 'avant'], 'tdroite', [2, 'avant']], [2, 'avant'], 'tdroite', [7, 'avant']] # 4
+
+
+
 # print_scores()
-# reset()

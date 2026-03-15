@@ -219,7 +219,7 @@ def longmoves(moves: list, niveau: int):
         strmoves (list): List with only string of moves.
         score (int): The score calculated.
     """
-    best_solution = [1, 3, 4, 6, 7]
+    best_solution = [1, 3, 4, 4, 7]
     if moves == ['']:
         raise ValueError("\n\n\n\n\n Aucune commande n'a été indiqué dans la liste de coups\n\n")
     strmoves = []

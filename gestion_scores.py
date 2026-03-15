@@ -55,10 +55,9 @@ def print_scores():
 
 # coups = [[2, [5, 'avant'], 'tdroite'], [3, [4, 'avant'], 'tdroite']] #2
 
-# coups = [[3, 'tgauche', 'avant', [2, 'tdroite'], 'avant', 'tgauche', [2,'avant']], 'tdroite'] # 3
+# coups = [[2, 'tdroite', [5, 'tgauche', [2, 'avant']]], [2, 'avant']] # 3
 
 # coups = [[2, 'tdroite', [7, 'avant'], 'tdroite', [2, 'avant']], [2, 'avant'], 'tdroite', [7, 'avant']] # 4
 
-
-
+# reset_score()
 # print_scores()

@@ -8,12 +8,9 @@ class SpaceAdventure():
     """
     def __init__(self, niveau: int):
         self.niveau = niveau
-        self.tableau, self.taille = self.niveau_choice()
-
+        self.tableau, self.taille, self.scalesize = self.niveau_choice()
         self.Window_Size = (1280, 720)
-        self.scalesize = 80
-        if niveau == 4:
-            self.scalesize=65
+        
         self.vaisseau = pygame.image.load("Images/Images_2026/vaisseau2.png")
         self.vaisseau = pygame.transform.scale(self.vaisseau, (self.scalesize, self.scalesize))
         self.vaisseauD = pygame.transform.rotate(self.vaisseau, 270)
@@ -53,6 +50,7 @@ class SpaceAdventure():
 
     def niveau_choice(self):
         if self.niveau == 0:
+            scalesize = 90
             taille = 7
             tableau = self.initable(taille)
             tableau[5][3] = 1
@@ -62,6 +60,7 @@ class SpaceAdventure():
             tableau[2][4] = 6
             tableau[4][4] = 6
         elif self.niveau == 1:
+            scalesize = 90
             taille = 7
             tableau = self.initable(taille)
             tableau[5][2] = 1
@@ -73,6 +72,7 @@ class SpaceAdventure():
             tableau[4,3:5] = 5
             tableau[2:4,5] = 5
         elif self.niveau == 2:
+            scalesize = 70
             taille = 9
             tableau = self.initable(taille)
             tableau[7, 1] = 1
@@ -89,6 +89,7 @@ class SpaceAdventure():
             tableau[5][7] = 6
             tableau[7][3] = 6
         elif self.niveau == 3:
+            scalesize = 70
             taille = 9
             tableau = self.initable(taille)
             tableau[7][4] = 1
@@ -106,28 +107,22 @@ class SpaceAdventure():
             tableau[2][2] = 6
             tableau[7][3] = 5
         elif self.niveau == 4:
+            scalesize = 55
             taille = 11
             tableau = self.initable(taille)
             tableau[1][5] = 2
-            tableau[4][3] = 5
-            tableau[6][3] = 5
-            tableau[8][3] = 5
-            tableau[2][3] = 5
-            tableau[4][5] = 5
-            tableau[6][5] = 5
-            tableau[8][5] = 5
-            tableau[2][5] = 5
-            tableau[4][7] = 5
-            tableau[6][7] = 5
-            tableau[8][7] = 5
-            tableau[2][7] = 5
-            tableau[5][6] = 6
-            tableau[7][6] = 6
-            tableau[3][6] = 6
-            tableau[5][4] = 6
-            tableau[7][4] = 6
-            tableau[3][4] = 6
-        return tableau, taille
+            tableau[2:10:2, 3:9:2] = 5
+            tableau[3:9:2, 4:8:2] = 6
+        else:
+            scalesize = 55
+            taille = 11
+            tableau = self.initable(taille)
+            tableau[1:11:2, 1:11:2] = 5
+            tableau[2:10:2, 2:10:2] = 5
+            tableau[2:10:2, 1:11:2] = 6
+            tableau[1:11:2, 2:10:2] = 6
+            tableau[5, 5] = 1
+        return tableau, taille, scalesize
 
     def posi_vaisseau(self):
         posi1 = np.where(self.tableau == 1)
@@ -197,14 +192,10 @@ class SpaceAdventure():
 
     def displayScreen(self, screen):
         square_dim = self.scalesize
-        # square = pygame.Surface((square_dim,square_dim))
         screen.blit(self.Background, (0, 0))
-        
 
         coord_x = self.Window_Size[0]/2 - (int(self.taille/2))*square_dim
         coord_y = self.Window_Size[1]/2 - (int(self.taille/2))*square_dim
-        
-        
         screen.blit(self.little_screen, (coord_x+square_dim, coord_y+square_dim))
 
         for ligne in self.tableau:

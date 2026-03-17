@@ -41,7 +41,7 @@ def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 12, time
         moves (list): La liste des coups pour le niveau.
     """
     partie = SpaceAdventure(niveau)
-    
+
     number_of_frames_init = number_of_frames
 
     FAST_MODES = 4
@@ -50,13 +50,20 @@ def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 12, time
     endtime = time.perf_counter()
     fin = False
     pause = True
-    
-    best_score = [500, 500, 700, 650, 900]
+
+    if niveau not in (0, 1, 2, 3, 4):
+        niveau = 5
+        pause = False
+        fast_mode = FAST_MODES
+        number_of_frames = 1
+        moves = [[100, 'tdroite']]
+
+    best_score = [500, 500, 700, 650, 900, 200]
     strmoves_init, level_score_init = longmoves(moves, niveau)
     strmoves = strmoves_init
-    level_score = level_score_init + 100
+    level_score = level_score_init
     total_score = 0
-    
+
     type_fin = 'Erreur'
     Loop_count = 0
     move_count = 0
@@ -69,7 +76,6 @@ def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 12, time
 
             PLAY_MOUSE_POS = pygame.mouse.get_pos()
             partie.displayScreen(SCREEN)
-
             # Condition to do the next move.
             if (Loop_count) % (number_of_frames) == 0 and not fin and not pause:
                 partie.posi_vaisseau()
@@ -94,36 +100,53 @@ def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 12, time
                     # Calcul les scores à la fin.
                     level_score += partie.goldcount
                     total_score = int(1000*level_score/best_score[niveau])
+                    if niveau == 5 : total_score = 0
                     # total_score = level_score
                     write(equipe=equipe, level=niveau, score=total_score)
+                    pause = True
                 move_count += 1
 
             if fin:
-                MORT_FOND = pygame.Surface((1200, 145))
-                MORT_FOND_RECT = MORT_FOND.get_rect(center=(640, 100))
+                MORT_FOND = pygame.Surface((1200, 125))
+                MORT_FOND_RECT = MORT_FOND.get_rect(center=(640, 75))
+                SCREEN.blit(MORT_FOND, MORT_FOND_RECT)
+
                 MORT_TEXT = get_font(45).render(type_fin, True, "#b68f40")
-                MORT_RECT = MORT_TEXT.get_rect(center=(640, 100))
+                MORT_RECT = MORT_TEXT.get_rect(center=(640, 80))
+                SCREEN.blit(MORT_TEXT, MORT_RECT)
+
                 SCORE_TEXT = get_font(25).render(f'Votre score pour ce niveau est : {total_score}',
                                                     True, "#b68f40")
-                SCORE_RECT = SCORE_TEXT.get_rect(center=(640, 135))
-                SCREEN.blit(MORT_FOND, MORT_FOND_RECT)
-                SCREEN.blit(MORT_TEXT, MORT_RECT)
+                SCORE_RECT = SCORE_TEXT.get_rect(center=(640, 115))
                 SCREEN.blit(SCORE_TEXT, SCORE_RECT)
 
-            BEHIND = pygame.Surface((900, 50))
-            BEHIND_RECT = BEHIND.get_rect(center=(640, 53))
+                SCORE_FOND = pygame.Surface((320, 300))
+                SCORE_RECT = SCORE_FOND.get_rect(center=(200, 280))
+                SCREEN.blit(SCORE_FOND, SCORE_RECT)
+                HS_TITLE_TEXT = get_font(35).render(f"Vos meilleurs scores", True, "#b68f40")
+                HS_TITLE_RECT = HS_TITLE_TEXT.get_rect(center=(200, 150))
+                SCREEN.blit(HS_TITLE_TEXT, HS_TITLE_RECT)
+                for level in range(5):
+                    HIGH_SCORE_TEXT = get_font(35).render(f"Niveau {level} : {read(equipe, level)}",
+                                                                                    True, "#b68f40")
+                    HIGH_SCORE_RECT = HIGH_SCORE_TEXT.get_rect(center=(200, 200+level*50))
+                    SCREEN.blit(HIGH_SCORE_TEXT, HIGH_SCORE_RECT)
 
-            HIGH_SCORE_TEXT = get_font(35).render(f"Meilleur score : {read(equipe=equipe, level=niveau)}", True, "#b68f40")
-            HIGH_SCORE_RECT = HIGH_SCORE_TEXT.get_rect(center=(355, 50))
+            BEHIND = pygame.Surface((900, 50))
+            BEHIND_RECT = BEHIND.get_rect(center=(640, 40))
+
+            TOTAL_SCORE_TEXT = get_font(35).render(f"Score total : {read(equipe=equipe)}", 
+                                                                    True, "#b68f40")
+            TOTAL_SCORE_RECT = TOTAL_SCORE_TEXT.get_rect(center=(355, 40))
 
             EQUIPE_TEXT = get_font(35).render(f"Équipe : {equipe}", True, "#b68f40")
-            EQUIPE_RECT = EQUIPE_TEXT.get_rect(center=(655, 50))
+            EQUIPE_RECT = EQUIPE_TEXT.get_rect(center=(655, 40))
 
             NIVEAU_TEXT = get_font(35).render(f"Niveau : {niveau}", True, "#b68f40")
-            NIVEAU_RECT = NIVEAU_TEXT.get_rect(center=(955, 50))
+            NIVEAU_RECT = NIVEAU_TEXT.get_rect(center=(955, 40))
 
             SCREEN.blit(BEHIND, BEHIND_RECT)
-            SCREEN.blit(HIGH_SCORE_TEXT, HIGH_SCORE_RECT)
+            SCREEN.blit(TOTAL_SCORE_TEXT, TOTAL_SCORE_RECT)
             SCREEN.blit(EQUIPE_TEXT, EQUIPE_RECT)
             SCREEN.blit(NIVEAU_TEXT, NIVEAU_RECT)
 
@@ -131,31 +154,30 @@ def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 12, time
             pause_text_input = 'Play'
             if not pause:
                 pause_text_input = 'Pause'
-            PAUSE = Button(base_image=pygame.Surface((200, 100)), position=(200, 350),
-                                text_input=pause_text_input, font=get_font(65),
+            elif pause and fin:
+                pause_text_input = 'Rejouer'
+            PAUSE = Button(base_image=pygame.Surface((200, 100)), position=(1100, 250),
+                                text_input=pause_text_input, font=get_font(55),
                                 base_color="#b68f40", hovering_color="Green")
             PAUSE.changeColor(PLAY_MOUSE_POS)
             PAUSE.update(SCREEN)
 
-            # Boutton pour quitter le jeu
-            QUIT = Button(base_image=pygame.Surface((200, 100)), position=(1100, 350),
-                                    text_input="Quitter", font=get_font(55), base_color="#b68f40",
-                                    hovering_color="Green")
-            QUIT.changeColor(PLAY_MOUSE_POS)
-            QUIT.update(SCREEN)
-            
             # Boutton pour changer la vitesse du jeu
             fast_text_input = f"x{fast_mode} >>"
             if fast_mode == FAST_MODES:
                 fast_text_input = "MAX >>"
-            FAST = Button(base_image=pygame.Surface((200, 100)), position=(200, 550),text_input=fast_text_input, font=get_font(55), base_color="#b68f40",hovering_color="Green")
+            FAST = Button(base_image=pygame.Surface((200, 100)),
+                            position=(1100, 400),text_input=fast_text_input, 
+                            font=get_font(55), base_color="#b68f40",hovering_color="Green")
             FAST.changeColor(PLAY_MOUSE_POS)
             FAST.update(SCREEN)
-            
-            # Boutton pour rejouer le niveau
-            REPLAY = Button(base_image=pygame.Surface((200, 100)), position=(1100, 550),text_input="Rejouer", font=get_font(55), base_color="#b68f40",hovering_color="Green")
-            REPLAY.changeColor(PLAY_MOUSE_POS)
-            REPLAY.update(SCREEN)
+
+            # Boutton pour quitter le jeu
+            QUIT = Button(base_image=pygame.Surface((200, 100)), position=(1100, 550),
+                                    text_input="Quitter", font=get_font(55), base_color="#b68f40",
+                                    hovering_color="Green")
+            QUIT.changeColor(PLAY_MOUSE_POS)
+            QUIT.update(SCREEN)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -171,13 +193,6 @@ def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 12, time
                                 move_count = 0
                                 Loop_count = 0
                                 strmoves, level_score = strmoves_init, level_score_init
-                        elif REPLAY.checkForInput(PLAY_MOUSE_POS):
-                            pause = True
-                            fin = False
-                            partie = SpaceAdventure(niveau)
-                            move_count = 0
-                            Loop_count = 0
-                            strmoves, level_score = strmoves_init, level_score_init
                         elif FAST.checkForInput(PLAY_MOUSE_POS):
                             fast_mode = (fast_mode) % FAST_MODES + 1
                             if fast_mode == FAST_MODES:
@@ -191,14 +206,14 @@ def play(equipe: int, niveau: int, moves: list, number_of_frames: int = 12, time
             start_time = endtime
 
 def recursive_moves(moves: list, strmoves: list):
-    for i in range(moves[0]):
+    for _ in range(moves[0]):
         for move in moves:
             if isinstance(move, str):
                 strmoves += [move]
             elif isinstance(move, list):
                 strmoves = recursive_moves(move, strmoves)
     return strmoves
-    
+
 def count_scores(moves:list):
     count = 0
     for move in moves:
@@ -219,7 +234,7 @@ def longmoves(moves: list, niveau: int):
         strmoves (list): List with only string of moves.
         score (int): The score calculated.
     """
-    best_solution = [1, 3, 4, 4, 7]
+    best_solution = [1, 3, 4, 4, 7, 1]
     if moves == ['']:
         raise ValueError("\n\n\n\n\n Aucune commande n'a été indiqué dans la liste de coups\n\n")
     strmoves = []
@@ -228,9 +243,7 @@ def longmoves(moves: list, niveau: int):
     moves = [1] + moves
     strmoves = recursive_moves(moves, strmoves)
     score = best_score - count_scores(moves)
-    
-    if score == 0:
-        score = 5
-    elif score > 0:
+
+    if score > 0:
         score = 0
-    return strmoves, score*20
+    return strmoves, score*20+200

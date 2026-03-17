@@ -34,8 +34,9 @@ def read(equipe, level='all'):
         return 0
     else:
         score_tot = 0
-        for key in scoresdict[f'equipe{equipe}'].keys():
-            score_tot += scoresdict[f'equipe{equipe}'][key]
+        if f'equipe{equipe}' in scoresdict.keys():
+            for key in scoresdict[f'equipe{equipe}'].keys():
+                score_tot += scoresdict[f'equipe{equipe}'][key]
         return score_tot
 
 def reset_score():
